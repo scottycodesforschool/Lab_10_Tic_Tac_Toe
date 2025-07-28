@@ -11,61 +11,13 @@ public class TicTacToe {
     private static final int ROWS = 3; // Number of rows on the Tic Tac Toe board
     private static final int COLS = 3; // Number of columns on the Tic Tac Toe board
     // The game board, initialized with ROWS and COLS. Each cell will store " " (empty), "X", or "O".
-    private static String board [][] = new String[ROWS][COLS];
+    private static final String[][] board = new String[ROWS][COLS];
 
     // Main method where the game execution will start
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in); // Create a single Scanner object for all input
+        Scanner in = new Scanner(System.in); // Create a single Scanner object for all inputs
 
         // --- Pseudo Code Outline for Tic Tac Toe Game ---
-        /*
-        // Declare game state variables
-        boolean playAgain = false;
-        String currentPlayer = "X"; // X always starts
-        boolean gameOver = false;
-        int turnCount = 0; // To track moves and check for tie/win conditions efficiently
-        int rowMove; // Player's desired row (1-3)
-        int colMove; // Players's desired column (1-3)
-        int actualRow; // Array index for row (0-2)
-        int actualCol; // Array index for column (0-2)
-
-        do { // Outer loop for playing multiple games
-            // 1. Clear the board
-            // 2. Reset game state variables for a new game
-            // 3. Display initial empty board
-
-            do { // Inner loop for a single game (turns)
-                // 4. Display the current board (before player's move)
-                // 5. Prompt current player for their move (row and column)
-                //    Loop until a valid (empty) spot is chosen
-                //    a. Get row input (1-3) using SafeInput.getRangedInt
-                //    b. Get col input (1-3) using SafeInput.getRangedInt
-                //    c. Convert 1-3 coordinates to 0-2 array indices
-                //    d. Validate move using isValidMove(actualRow, actualCol)
-                //       If invalid, print error and loop again
-
-                // 6. Record the valid move on the board
-                // 7. Increment turn counter
-
-                // 8. Check for win or tie conditions
-                //    a. If turnCount >= 5 (minimum moves for a win):
-                //       i. Check for win using isWin(currentPlayer)
-                //          If win, announce winner, set gameOver = true, break inner loop
-                //    b. If turnCount == 9 (board full) AND no win yet:
-                //       i. Check for tie using isTie()
-                //          If tie, announce tie, set gameOver = true, break inner loop
-
-                // 9. If game is not over, toggle player (X to O, O to X)
-
-            } while (!gameOver); // End of inner game loop
-
-            // 10. Prompt players to play again using SafeInput.getYNConfirm
-            //     Set playAgain based on user's response
-
-        } while (playAgain); // End of outer play again loop
-
-        // Close scanner
-        */
         // --- End of Pseudo Code Outline ---
 
 
@@ -83,7 +35,7 @@ public class TicTacToe {
             clearBoard(); // Clear the board for a new game
             currentPlayer = "X"; // X always starts
             gameOver = false;
-            turnCount = 0; // Reset turn counter for new game
+            turnCount = 0; // Reset turn counter for a new game
 
             SafeInput.prettyHeader("Welcome to Tic Tac Toe!"); // Display a nice header
             display(); // Display the initial empty board
@@ -102,10 +54,10 @@ public class TicTacToe {
                     actualCol = colMove - 1;
 
                     // Validate move
-                    if (!isValidMove(actualRow, actualCol)) {
+                    if (isValidMove(actualRow, actualCol)) {
                         System.out.println("Invalid move! That spot is already taken or out of bounds. Please choose an empty spot.");
                     }
-                } while (!isValidMove(actualRow, actualCol)); // Loop until a valid move is entered
+                } while (isValidMove(actualRow, actualCol)); // Loop until a valid move is entered
 
                 // Record the valid move on the board
                 board[actualRow][actualCol] = currentPlayer;
@@ -121,14 +73,14 @@ public class TicTacToe {
                     }
                 }
 
-                if (!gameOver && turnCount == 9) { // If board is full and no win, it's a tie
-                    if (isTie()) { // isTie checks if board is full and no win
+                if (!gameOver && turnCount == 9) { // If the board is full and no win, it's a tie
+                    if (isTie()) { // isTie checks if the board is full and no win
                         SafeInput.prettyHeader("It's a TIE! Good game!");
                         gameOver = true;
                     }
                 }
 
-                // If game is not over, toggle player
+                // If the game is not over, toggle player
                 if (!gameOver) {
                     currentPlayer = (currentPlayer.equals("X")) ? "O" : "X";
                 }
@@ -147,7 +99,7 @@ public class TicTacToe {
     // Helper methods for Tic Tac Toe game logic (private static)
 
     /**
-     * Clears the Tic Tac Toe board by setting all elements to a single space character " ".
+     * Clears the Tic Tac Toe board by setting all elements to a single space character "".
      * This prepares the board for a new game.
      */
     private static void clearBoard() {
@@ -193,9 +145,9 @@ public class TicTacToe {
      */
     private static boolean isValidMove(int row, int col) {
         // Check if the cell at the given coordinates is a space (empty)
-        // Bounds checking is implicitly handled by getRangedInt for user input (1-3 converted to 0-2)
+        // Bounds checking is implicitly handled by getRangedInt for user input (1-3 converted to 0-2),
         // but it's good practice to keep it for robustness if this method were called directly.
-        return row >= 0 && row < ROWS && col >= 0 && col < COLS && board[row][col].equals(" ");
+        return row < 0 || row >= ROWS || col < 0 || col >= COLS || !board[row][col].equals(" ");
     }
 
     /**
@@ -246,7 +198,7 @@ public class TicTacToe {
 
     /**
      * Checks if the specified player has a win condition in any diagonal.
-     * There are two possible diagonals: top-left to bottom-right, and top-right to bottom-left.
+     * There are two possible diagonals: top-left to bottom-right, and top-right to a bottom-left.
      *
      * @param player The player symbol ("X" or "O") to check for a diagonal win.
      * @return true if the player has three in a diagonal, false otherwise.
@@ -257,10 +209,7 @@ public class TicTacToe {
             return true;
         }
         // Check top-right to bottom-left diagonal
-        if (board[0][2].equals(player) && board[1][1].equals(player) && board[2][0].equals(player)) {
-            return true;
-        }
-        return false; // No diagonal win found
+        return board[0][2].equals(player) && board[1][1].equals(player) && board[2][0].equals(player);// No diagonal win found
     }
 
     /**
